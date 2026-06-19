@@ -15,30 +15,114 @@
     <meta property="og:image" content="{{ url_for('static', filename='images/gallery/slider/slider_01.webp', _external=True) }}" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:image" content="{{ url_for('static', filename='images/gallery/slider/slider_01.webp', _external=True) }}" />
+    <!-- LocalBusiness Schema – renders on every page -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "LocalBusiness",
+      "@id": "https://www.decorbypearls.com/#localbusiness",
+      "name": "Decor By Pearls",
+      "image": "https://www.decorbypearls.com/static/images/logo_decorbypearls.png?v=1540000000",
+      "url": "https://www.decorbypearls.com/",
+      "telephone": "+91-7355051840",
+      "priceRange": "$$$",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "4th Floor, Plot No. C-210 B, Fateh Tower, Industrial Area, Phase 8B, Sector 74",
+        "addressLocality": "Sahibzada Ajit Singh Nagar",
+        "addressRegion": "Punjab",
+        "postalCode": "160071",
+        "addressCountry": "IN"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": 30.713329,
+        "longitude": 76.695566
+      },
+      "openingHoursSpecification": {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday"
+        ],
+        "opens": "09:00",
+        "closes": "18:30"
+      },
+      "sameAs": [
+        "https://www.facebook.com/people/Decor-By-Pearls/61578885675391/",
+        "https://www.instagram.com/decor_bypearls"
+      ]
+    }
+    </script>
+
+    <!-- Organization + Person Schema – renders on every page -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@graph": [
         {
           "@type": "Organization",
+          "@id": "https://www.decorbypearls.com/#organization",
           "name": "Decor By Pearls",
-          "url": "{{ url_for('home', _external=True) }}",
-          "logo": "{{ url_for('static', filename='images/logo_decorbypearls.png', _external=True) }}",
-          "sameAs": [
-            "https://www.facebook.com/profile.php?id=61578885675391",
-            "https://www.instagram.com/decor_bypearls?igsh=MWMxZXMxOXJtMmQzeQ==",
-            "https://wa.me/917355051840",
-            "https://pin.it/5KsKYR2QE"
-          ],
-          "contactPoint": [
+          "url": "https://www.decorbypearls.com/",
+          "logo": "https://www.decorbypearls.com/static/images/logo_decorbypearls.png?v=1540000000",
+          "founder": {
+            "@id": "https://www.decorbypearls.com/about/#mohit-kumar"
+          },
+          "employee": [
             {
-              "@type": "ContactPoint",
-              "telephone": "+91-7355051840",
-              "contactType": "customer service",
-              "areaServed": ["IN"],
-              "availableLanguage": ["en", "hi"]
+              "@id": "https://www.decorbypearls.com/about/#sachin-mishra"
+            },
+            {
+              "@id": "https://www.decorbypearls.com/about/#jasneet-kaur"
             }
-          ]
+          ],
+          "sameAs": [
+            "https://www.facebook.com/people/Decor-By-Pearls/61578885675391/",
+            "https://www.instagram.com/decor_bypearls"
+          ],
+          "contactPoint": {
+            "@type": "ContactPoint",
+            "telephone": "+91-7355051840",
+            "contactType": "customer service",
+            "areaServed": "IN",
+            "availableLanguage": ["en", "hi"]
+          }
+        },
+        {
+          "@type": "Person",
+          "@id": "https://www.decorbypearls.com/about/#mohit-kumar",
+          "name": "Mohit Kumar",
+          "jobTitle": "Founder",
+          "worksFor": {
+            "@id": "https://www.decorbypearls.com/#organization"
+          },
+          "url": "https://www.decorbypearls.com/about/"
+        },
+        {
+          "@type": "Person",
+          "@id": "https://www.decorbypearls.com/about/#sachin-mishra",
+          "name": "Sachin Mishra",
+          "jobTitle": "Co-Founder",
+          "worksFor": {
+            "@id": "https://www.decorbypearls.com/#organization"
+          },
+          "url": "https://www.decorbypearls.com/about/"
+        },
+        {
+          "@type": "Person",
+          "@id": "https://www.decorbypearls.com/about/#jasneet-kaur",
+          "name": "Jasneet Kaur",
+          "jobTitle": "Co-Founder",
+          "worksFor": {
+            "@id": "https://www.decorbypearls.com/#organization"
+          },
+          "url": "https://www.decorbypearls.com/about/"
         },
         {
           "@type": "WebSite",

@@ -241,96 +241,162 @@ def home():
     testimonials = Testimonial.query.filter_by(status='approved').order_by(Testimonial.created_at.desc()).limit(3).all()
     return render_template('pages/home.html', testimonials=testimonials)
 
-@app.route('/about')
+@app.route('/about/')
 def about():
     return render_template('pages/about.html')
 
-@app.route('/services')
+@app.route('/services/')
 def services():
     return render_template('pages/services.html')
 
-@app.route('/venues/chandigarh')
+@app.route('/venues/chandigarh/')
 def chandigarh():
     return render_template('pages/chandigarh.html')
 
-@app.route('/venues/punjab')
+@app.route('/venues/punjab/')
 def punjab():
     return render_template('pages/punjab.html')
 
-@app.route('/venues/haryana')
+@app.route('/venues/haryana/')
 def haryana():
     return render_template('pages/haryana.html')
 
-@app.route('/venues/himachal')
+@app.route('/venues/himachal/')
 def himachal():
     return render_template('pages/himachal.html')
 
-@app.route('/gallery')
+@app.route('/gallery/')
 def gallery():
     return render_template('pages/gallery.html')
 
-@app.route('/testimonials')
+@app.route('/testimonials/')
 def testimonials():
     approved_testimonials = Testimonial.query.filter_by(status='approved').order_by(Testimonial.created_at.desc()).all()
     return render_template('pages/testimonials.html', testimonials=approved_testimonials)
 
-@app.route('/contact')
+@app.route('/contact/')
 def contact():
     return render_template('pages/contact.html')
 
 
 @app.route('/robots.txt')
 def robots_txt():
-    robots_content = f"""User-agent: *
+    content = """User-agent: *
 Allow: /
 Disallow: /admin/
 Disallow: /login
 Disallow: /logout
 
-Sitemap: {url_for('sitemap_xml', _external=True)}
+Sitemap: https://www.decorbypearls.com/sitemap_index.xml
 """
-    return Response(robots_content, mimetype='text/plain')
+    return Response(content, mimetype='text/plain')
 
 
+# --- Sitemap helpers ---
+
+def _url_entry(loc, lastmod, changefreq, priority):
+    return (
+        f"  <url>"
+        f"<loc>{loc}</loc>"
+        f"<lastmod>{lastmod}</lastmod>"
+        f"<changefreq>{changefreq}</changefreq>"
+        f"<priority>{priority}</priority>"
+        f"</url>"
+    )
+
+def _urlset_response(entries):
+    body = "\n".join(entries)
+    return Response(
+        f'<?xml version="1.0" encoding="UTF-8"?>\n'
+        f'<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+        f'{body}\n'
+        f'</urlset>',
+        mimetype='application/xml'
+    )
+
+
+# --- Sitemap index (parent) ---
+
+@app.route('/sitemap_index.xml')
+def sitemap_index():
+    today = datetime.utcnow().date().isoformat()
+    base = 'https://www.decorbypearls.com'
+
+    last_blog = Blog.query.order_by(Blog.created_at.desc()).first()
+    blog_lastmod = last_blog.created_at.date().isoformat() if last_blog and last_blog.created_at else today
+
+    sitemaps = [
+        (f'{base}/page-sitemap.xml',    today),
+        (f'{base}/service-sitemap.xml', today),
+        (f'{base}/blog-sitemap.xml',    blog_lastmod),
+    ]
+    entries = "\n".join(
+        f"  <sitemap><loc>{loc}</loc><lastmod>{lm}</lastmod></sitemap>"
+        for loc, lm in sitemaps
+    )
+    content = (
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+        f'{entries}\n'
+        '</sitemapindex>'
+    )
+    return Response(content, mimetype='application/xml')
+
+
+# /sitemap.xml 301 → /sitemap_index.xml (keeps old GSC submissions working)
 @app.route('/sitemap.xml')
 def sitemap_xml():
+    return redirect('https://www.decorbypearls.com/sitemap_index.xml', 301)
+
+
+# --- Child sitemaps ---
+
+@app.route('/page-sitemap.xml')
+def page_sitemap():
     today = datetime.utcnow().date().isoformat()
-
-    static_pages = [
-        (url_for('home', _external=True),         '1.0', 'daily'),
-        (url_for('services', _external=True),     '0.9', 'weekly'),
-        (url_for('chandigarh', _external=True),   '0.9', 'weekly'),
-        (url_for('punjab', _external=True),       '0.9', 'weekly'),
-        (url_for('haryana', _external=True),      '0.9', 'weekly'),
-        (url_for('himachal', _external=True),     '0.9', 'weekly'),
-        (url_for('gallery', _external=True),      '0.8', 'weekly'),
-        (url_for('blog', _external=True),         '0.8', 'daily'),
-        (url_for('about', _external=True),        '0.7', 'monthly'),
-        (url_for('testimonials', _external=True), '0.7', 'weekly'),
-        (url_for('contact', _external=True),      '0.7', 'monthly'),
+    base = 'https://www.decorbypearls.com'
+    pages = [
+        (f'{base}/',              '1.0', 'daily'),
+        (f'{base}/about/',        '0.7', 'monthly'),
+        (f'{base}/gallery/',      '0.8', 'weekly'),
+        (f'{base}/testimonials/', '0.7', 'weekly'),
+        (f'{base}/contact/',      '0.7', 'monthly'),
+        (f'{base}/blog/',         '0.8', 'daily'),
     ]
+    entries = [_url_entry(loc, today, cf, pri) for loc, pri, cf in pages]
+    return _urlset_response(entries)
 
-    blog_posts = Blog.query.order_by(Blog.created_at.desc()).all()
-    blog_entries = [
-        (url_for('blog_single', slug=post.slug, _external=True),
-         post.created_at.date().isoformat() if post.created_at else today,
-         '0.8', 'monthly')
-        for post in blog_posts
+
+@app.route('/service-sitemap.xml')
+def service_sitemap():
+    today = datetime.utcnow().date().isoformat()
+    base = 'https://www.decorbypearls.com'
+    pages = [
+        (f'{base}/services/',          '0.9', 'weekly'),
+        (f'{base}/venues/chandigarh/', '0.9', 'weekly'),
+        (f'{base}/venues/punjab/',     '0.9', 'weekly'),
+        (f'{base}/venues/haryana/',    '0.9', 'weekly'),
+        (f'{base}/venues/himachal/',   '0.9', 'weekly'),
     ]
+    entries = [_url_entry(loc, today, cf, pri) for loc, pri, cf in pages]
+    return _urlset_response(entries)
 
-    entries = []
-    for url, priority, changefreq in static_pages:
-        entries.append(f"  <url><loc>{url}</loc><lastmod>{today}</lastmod><changefreq>{changefreq}</changefreq><priority>{priority}</priority></url>")
-    for url, lastmod, priority, changefreq in blog_entries:
-        entries.append(f"  <url><loc>{url}</loc><lastmod>{lastmod}</lastmod><changefreq>{changefreq}</changefreq><priority>{priority}</priority></url>")
 
-    sitemap_content = """<?xml version=\"1.0\" encoding=\"UTF-8\"?>
-<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">
-{entries}
-</urlset>
-""".format(entries="\n".join(entries))
-
-    return Response(sitemap_content, mimetype='application/xml')
+@app.route('/blog-sitemap.xml')
+def blog_sitemap():
+    today = datetime.utcnow().date().isoformat()
+    base = 'https://www.decorbypearls.com'
+    posts = Blog.query.order_by(Blog.created_at.desc()).all()
+    entries = [
+        _url_entry(
+            f"{base}/blog/{post.slug}/",
+            post.created_at.date().isoformat() if post.created_at else today,
+            'monthly',
+            '0.8'
+        )
+        for post in posts
+    ]
+    return _urlset_response(entries)
 
 @app.route('/submit-testimonial', methods=['POST'])
 def submit_testimonial():
@@ -346,7 +412,7 @@ def submit_testimonial():
         return jsonify({"status": "success", "message": "Thank you! Your testimonial has been submitted for review."})
     return jsonify({"status": "error", "message": "Please fill all required fields."}), 400
 
-@app.route('/blog')
+@app.route('/blog/')
 def blog():
     cat_id = request.args.get('category', '')
     search_q = request.args.get('q', '').strip()
@@ -367,7 +433,7 @@ def blog():
     categories = Category.query.all()
     return render_template('pages/blogs.html', blogs=blogs, categories=categories, selected_category=cat_id, search_query=search_q)
 
-@app.route('/blog/<slug>')
+@app.route('/blog/<slug>/')
 def blog_single(slug):
     post = Blog.query.filter_by(slug=slug).first_or_404()
     recent_posts = Blog.query.filter(Blog.slug != slug).order_by(Blog.created_at.desc()).limit(3).all()
