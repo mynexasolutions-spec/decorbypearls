@@ -245,25 +245,46 @@ def home():
 def about():
     return render_template('pages/about.html')
 
-@app.route('/services/')
+@app.route('/services/complete-wedding-management/')
 def services():
     return render_template('pages/services.html')
 
-@app.route('/venues/chandigarh/')
+@app.route('/services/chandigarh/')
 def chandigarh():
     return render_template('pages/chandigarh.html')
 
-@app.route('/venues/punjab/')
+@app.route('/services/punjab/')
 def punjab():
     return render_template('pages/punjab.html')
 
-@app.route('/venues/haryana/')
+@app.route('/services/haryana/')
 def haryana():
     return render_template('pages/haryana.html')
 
-@app.route('/venues/himachal/')
+@app.route('/services/himachal/')
 def himachal():
     return render_template('pages/himachal.html')
+
+# 301 redirects from old URLs
+@app.route('/services/')
+def services_old():
+    return redirect(url_for('services'), 301)
+
+@app.route('/venues/chandigarh/')
+def chandigarh_old():
+    return redirect(url_for('chandigarh'), 301)
+
+@app.route('/venues/punjab/')
+def punjab_old():
+    return redirect(url_for('punjab'), 301)
+
+@app.route('/venues/haryana/')
+def haryana_old():
+    return redirect(url_for('haryana'), 301)
+
+@app.route('/venues/himachal/')
+def himachal_old():
+    return redirect(url_for('himachal'), 301)
 
 @app.route('/gallery/')
 def gallery():
@@ -372,11 +393,11 @@ def service_sitemap():
     today = datetime.utcnow().date().isoformat()
     base = 'https://www.decorbypearls.com'
     pages = [
-        (f'{base}/services/',          '0.9', 'weekly'),
-        (f'{base}/venues/chandigarh/', '0.9', 'weekly'),
-        (f'{base}/venues/punjab/',     '0.9', 'weekly'),
-        (f'{base}/venues/haryana/',    '0.9', 'weekly'),
-        (f'{base}/venues/himachal/',   '0.9', 'weekly'),
+        (f'{base}/services/complete-wedding-management/', '0.9', 'weekly'),
+        (f'{base}/services/chandigarh/',                '0.9', 'weekly'),
+        (f'{base}/services/punjab/',                    '0.9', 'weekly'),
+        (f'{base}/services/haryana/',                   '0.9', 'weekly'),
+        (f'{base}/services/himachal/',                  '0.9', 'weekly'),
     ]
     entries = [_url_entry(loc, today, cf, pri) for loc, pri, cf in pages]
     return _urlset_response(entries)

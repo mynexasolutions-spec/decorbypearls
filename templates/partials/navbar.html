@@ -8,10 +8,10 @@
     </div>
     <ul class="nav-links" id="nav-links">
         <li><a href="{{ url_for('home') }}">Home</a></li>
-        <li><a href="{{ url_for('services') }}">Services</a></li>
         <li class="dropdown">
-            <a href="#">Venues <i class="ri-arrow-down-s-line"></i></a>
+            <a href="#">Services <i class="ri-arrow-down-s-line"></i></a>
             <ul class="dropdown-menu">
+                <li><a href="{{ url_for('services') }}">Complete Wedding Management</a></li>
                 <li><a href="{{ url_for('chandigarh') }}">Chandigarh</a></li>
                 <li><a href="{{ url_for('punjab') }}">Punjab</a></li>
                 <li><a href="{{ url_for('haryana') }}">Haryana</a></li>

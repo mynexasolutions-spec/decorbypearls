@@ -14,8 +14,8 @@
   "@type": "BreadcrumbList",
   "itemListElement": [
     { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.decorbypearls.com/" },
-    { "@type": "ListItem", "position": 2, "name": "Services", "item": "https://www.decorbypearls.com/services/" },
-    { "@type": "ListItem", "position": 3, "name": "Punjab", "item": "https://www.decorbypearls.com/venues/punjab/" }
+    { "@type": "ListItem", "position": 2, "name": "Services", "item": "https://www.decorbypearls.com/services/complete-wedding-management/" },
+    { "@type": "ListItem", "position": 3, "name": "Punjab", "item": "https://www.decorbypearls.com/services/punjab/" }
   ]
 }
 </script>
@@ -95,7 +95,7 @@
   <div class="container">
     <a href="{{ url_for('home') }}">Home</a>
     <span class="bc-sep">›</span>
-    <span class="bc-text">Venues</span>
+    <a href="{{ url_for('services') }}">Services</a>
     <span class="bc-sep">›</span>
     <span class="bc-current">Punjab</span>
   </div>
