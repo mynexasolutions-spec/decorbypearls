@@ -37,10 +37,8 @@
                 </span>
                 {% else %}—{% endif %}
             </td>
-            <td style="max-width:260px;">
-                <span title="{{ c.message }}" style="display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:#555; font-size:0.9rem;">
-                    {{ c.message }}
-                </span>
+            <td style="max-width:320px;">
+                <span style="display:block; white-space:pre-wrap; word-break:break-word; color:#555; font-size:0.9rem; line-height:1.5;">{{ c.message }}</span>
             </td>
             <td style="white-space:nowrap; color:#888; font-size:0.85rem;">
                 {{ c.created_at.strftime('%d %b %Y, %I:%M %p') if c.created_at else '—' }}
