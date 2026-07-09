@@ -285,7 +285,12 @@
         >
           Send a Message
         </h3>
-        <form action="#" method="POST">
+        {% if success %}
+        <div style="background:#f0faf0; border:1px solid #a3d9a5; border-radius:10px; padding:20px 24px; margin-bottom:30px; color:#2d6a2d; font-family:'Jost',sans-serif;">
+          ✓ Thank you! Your inquiry has been submitted. We'll get back to you shortly.
+        </div>
+        {% endif %}
+        <form action="{{ url_for('contact') }}" method="POST">
           <div class="form-group">
             <input type="text" id="name" name="name" placeholder=" " required />
             <label for="name">Your Name</label>

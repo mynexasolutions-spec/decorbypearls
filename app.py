@@ -125,6 +125,16 @@ class Testimonial(db.Model):
     status = db.Column(db.String(20), default='pending')
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
+class ContactSubmission(db.Model):
+    __tablename__ = 'contact_submission'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(150), nullable=False)
+    phone = db.Column(db.String(20))
+    event_type = db.Column(db.String(50))
+    message = db.Column(db.Text, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
 def seed_db():
     # Initial Categories
     categories = ['Uncategorized', 'Planning Tips', 'Trends', 'Inspiration', 'Hospitality']
@@ -195,7 +205,8 @@ with app.app_context():
         run_migration('ALTER TABLE IF EXISTS "user" RENAME TO site_user')
         run_migration('ALTER TABLE site_user ALTER COLUMN password TYPE VARCHAR(255)')
         run_migration('ALTER TABLE site_user ALTER COLUMN username TYPE VARCHAR(100)')
-        
+        run_migration("CREATE TABLE IF NOT EXISTS contact_submission (id SERIAL PRIMARY KEY, name VARCHAR(100) NOT NULL, email VARCHAR(150) NOT NULL, phone VARCHAR(20), event_type VARCHAR(50), message TEXT NOT NULL, created_at TIMESTAMP DEFAULT NOW())")
+
     seed_db()
     # Create or update default admin
     admin_email = os.environ.get('ADMIN_USERNAME', 'ashishr730246@gmail.com')
@@ -295,9 +306,24 @@ def testimonials():
     approved_testimonials = Testimonial.query.filter_by(status='approved').order_by(Testimonial.created_at.desc()).all()
     return render_template('pages/testimonials.html', testimonials=approved_testimonials)
 
-@app.route('/contact/')
+@app.route('/contact/', methods=['GET', 'POST'])
 def contact():
-    return render_template('pages/contact.html')
+    if request.method == 'POST':
+        name = request.form.get('name', '').strip()
+        email = request.form.get('email', '').strip()
+        phone = request.form.get('phone', '').strip()
+        event_type = request.form.get('event_type', '').strip()
+        message = request.form.get('message', '').strip()
+        if name and email and message:
+            submission = ContactSubmission(
+                name=name, email=email, phone=phone,
+                event_type=event_type, message=message
+            )
+            db.session.add(submission)
+            db.session.commit()
+        return redirect(url_for('contact') + '?success=1')
+    success = request.args.get('success')
+    return render_template('pages/contact.html', success=success)
 
 
 @app.route('/robots.txt')
