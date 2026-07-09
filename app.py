@@ -609,6 +609,23 @@ def delete_testimonial(id):
     flash('Testimonial removed.', 'info')
     return redirect(url_for('admin_testimonials'))
 
+# --- CONTACT LEADS ---
+
+@app.route('/admin/contacts')
+@login_required
+def admin_contacts():
+    contacts = ContactSubmission.query.order_by(ContactSubmission.created_at.desc()).all()
+    return render_template('admin/manage_contacts.html', contacts=contacts)
+
+@app.route('/admin/contact/delete/<int:id>')
+@login_required
+def delete_contact(id):
+    c = ContactSubmission.query.get_or_404(id)
+    db.session.delete(c)
+    db.session.commit()
+    flash('Lead deleted.', 'info')
+    return redirect(url_for('admin_contacts'))
+
 # --- CATEGORY MANAGEMENT ---
 
 @app.route('/admin/categories')

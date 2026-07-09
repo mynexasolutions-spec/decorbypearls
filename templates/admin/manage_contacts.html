@@ -1,0 +1,68 @@
+{% extends 'admin/base.html' %}
+
+{% block admin_content %}
+<div class="header">
+    <h1>Leads / <em>Contacts</em></h1>
+    <span style="font-size:0.95rem; color:#888;">{{ contacts|length }} total submission{{ 's' if contacts|length != 1 }}</span>
+</div>
+
+<table class="data-table">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Service</th>
+            <th>Message</th>
+            <th>Date</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for c in contacts %}
+        <tr>
+            <td style="color:#aaa; font-size:0.85rem;">{{ loop.index }}</td>
+            <td><strong>{{ c.name }}</strong></td>
+            <td><a href="mailto:{{ c.email }}" style="color:var(--gold); text-decoration:none;">{{ c.email }}</a></td>
+            <td>
+                {% if c.phone %}
+                <a href="tel:{{ c.phone }}" style="color:var(--text); text-decoration:none;">{{ c.phone }}</a>
+                {% else %}—{% endif %}
+            </td>
+            <td>
+                {% if c.event_type %}
+                <span style="background:rgba(197,160,89,0.12); color:var(--gold); padding:3px 10px; border-radius:20px; font-size:0.8rem; white-space:nowrap;">
+                    {{ c.event_type | replace('-', ' ') | title }}
+                </span>
+                {% else %}—{% endif %}
+            </td>
+            <td style="max-width:260px;">
+                <span title="{{ c.message }}" style="display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:#555; font-size:0.9rem;">
+                    {{ c.message }}
+                </span>
+            </td>
+            <td style="white-space:nowrap; color:#888; font-size:0.85rem;">
+                {{ c.created_at.strftime('%d %b %Y, %I:%M %p') if c.created_at else '—' }}
+            </td>
+            <td>
+                <a href="{{ url_for('delete_contact', id=c.id) }}"
+                   class="btn btn-danger"
+                   style="padding:5px 10px; font-size:0.8rem;"
+                   onclick="return confirm('Delete this lead?')">
+                    <i class="ri-delete-bin-line"></i>
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+        {% if not contacts %}
+        <tr>
+            <td colspan="8" style="text-align:center; padding:60px; color:#aaa;">
+                <i class="ri-inbox-line" style="font-size:2rem; display:block; margin-bottom:10px;"></i>
+                No contact submissions yet.
+            </td>
+        </tr>
+        {% endif %}
+    </tbody>
+</table>
+{% endblock %}

@@ -263,6 +263,7 @@
             <li><a href="{{ url_for('admin_blogs') }}" class="{{ 'active' if 'blog' in request.path }}"><i class="ri-article-line"></i> Manage Blogs</a></li>
             <li><a href="{{ url_for('admin_categories') }}" class="{{ 'active' if 'category' in request.path }}"><i class="ri-list-settings-line"></i> Manage Categories</a></li>
             <li><a href="{{ url_for('admin_testimonials') }}" class="{{ 'active' if 'testimonial' in request.path }}"><i class="ri-message-3-line"></i> Testimonials</a></li>
+            <li><a href="{{ url_for('admin_contacts') }}" class="{{ 'active' if 'contact' in request.path }}"><i class="ri-contacts-line"></i> Leads / Contacts</a></li>
             <li><a href="{{ url_for('home') }}" target="_blank"><i class="ri-external-link-line"></i> View Website</a></li>
             <li style="margin-top: auto; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px;">
                 <a href="{{ url_for('logout') }}" style="color: #ff4d4d;"><i class="ri-logout-box-line"></i> Logout</a>
